@@ -87,6 +87,7 @@ public class PlaneManagement {
         System.out.println("\n" + " ".repeat(10) + "*".repeat(43));
     }
         
+    
 
     public static void exitApplicationPrompt(Scanner scanner) {
         System.out.print("\nDo you want to exit from the application (y/n) :");
