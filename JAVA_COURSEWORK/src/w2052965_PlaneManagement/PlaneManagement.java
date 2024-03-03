@@ -4,6 +4,8 @@ import java.util.*;
 import w2052965_PlaneManagement.Ticket;*/
 
 public class PlaneManagement {
+     // Defining an array to store tickets sold during the session
+   
 
 
     public static void main(String[] args)  {
@@ -19,7 +21,10 @@ public class PlaneManagement {
             e.printStackTrace();
         }
 
+        //initializing arrays in main method
         int[][] seats = seatArray();
+        Ticket[] ticketArray = new Ticket[52];
+        int ticketArrayIndex = 0;
 
 
         
@@ -35,13 +40,13 @@ public class PlaneManagement {
             switch (opt) {
                 case '1':
                 System.out.println("\n");
-                buy_seat(seats);//running the buy seat method
+                buy_seat(seats,ticketArray,ticketArrayIndex );//running the buy seat method
                 exitApplicationPrompt(scanner);
                     break;
                 
                 case '2':
                 System.out.println("\n");
-                cancel_seat(seats);//running the buy seat method
+                cancel_seat(seats,ticketArray,ticketArrayIndex);//running the buy seat method
                 exitApplicationPrompt(scanner);
                     break;
 
@@ -116,9 +121,9 @@ public class PlaneManagement {
         };
         return  seats;
     }
-    
 
-    public static void  buy_seat(int[][] seats){
+
+    public static void  buy_seat(int[][] seats, Ticket[] ticketArray, int ticketArrayIndex){
         Scanner scanner = new Scanner(System.in);
         // Displaying the seat arrangement for the user
         show_seating_plan(seats);
@@ -174,7 +179,7 @@ public class PlaneManagement {
                 Thread.sleep(2000); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }//generating an error if seat is already occupied
             System.out.println("\nError: The seat is already booked !");
         } else {
             System.out.println("-Please Wait While Reserving Your Seat-");
@@ -183,19 +188,26 @@ public class PlaneManagement {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // Booking the seat
+            // Booking the seat if seat is valid
             seats[rowIndex][seatNumber - 1] = 1; 
             System.out.println("\nSeat booked successfully !");
-            //Printing the Ticket Information
+            
+            
+            //Generating the Ticket Information
             Person person = new Person(userName,userSurName,userEmail);
             char rowLetter = (char) ('A' + rowIndex);
             Ticket ticket = new Ticket(rowLetter, seatNumber, price, person);
+            //appending  the ticket information to the ticket array
+            ticketArray[ticketArrayIndex] = ticket;
+            ticketArrayIndex++;
+            
+            //Printing the ticket information
             ticket.printTicketInfo();
         }
     }
 
 
-    public static void cancel_seat(int[][] seats) {
+    public static void cancel_seat(int[][] seats, Ticket[] ticketArray, int ticketArrayIndex) {
         Scanner scanner = new Scanner(System.in);
         
         // Prompting the desired row letters and seat numbers to buy
@@ -227,9 +239,19 @@ public class PlaneManagement {
         if (seats[rowIndex][seatNumber - 1] == 0) {
             System.out.println("Error: This seat is not booked.");
         } else {
-            // Mark the seat as booked
-            seats[rowIndex][seatNumber - 1] = 0; // Book the seat
+            // Mark the seat as cancelled
+            seats[rowIndex][seatNumber - 1] = 0; // cancel the seat
             System.out.println("Seat cancelled successfully.");
+            //Removing the seat details form the ticket array
+            for (int i = 0; i < ticketArrayIndex; i++) {
+                if (ticketArray[i].getRow() == rowIndex + 'A' && ticketArray[i].getSeat() == seatNumber) {
+					for (int j = i; j < ticketArrayIndex - 1; j++) {
+						ticketArray[j] = ticketArray[j + 1];
+					}
+					ticketArrayIndex--;
+					break;
+				}
+            }
         }
     }
 
@@ -266,5 +288,5 @@ public class PlaneManagement {
     }
 
     
-    
+
 }
