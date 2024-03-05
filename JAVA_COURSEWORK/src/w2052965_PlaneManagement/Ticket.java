@@ -1,5 +1,9 @@
 package w2052965_PlaneManagement;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class Ticket {
     // Attributes
     private char row;
@@ -56,5 +60,19 @@ public class Ticket {
         System.out.println("Price: £" + price);
         System.out.println("\n"+"-Person Information-");
         person.printInfo(); // Print person information using the Person object's printInfo() method
+    }
+
+
+    public void saveTicket(String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename + ".txt"))) {
+            writer.println("Row: " + (char) (row + 'A'));
+            writer.println("Seat: " + seat);
+            writer.println("Price: " + price);
+            writer.println("Name: " + person.getName());
+            writer.println("Surname: " + person.getSurname());
+            writer.println("Email: " + person.getEmail());
+        } catch (IOException e) {
+            System.err.println("Error saving ticket to file: " + e.getMessage());
+        }
     }
 }

@@ -219,6 +219,12 @@ public class PlaneManagement {
             ticketArray[ticketArrayIndex++] = ticket;
             //Printing the ticket information
             ticket.printTicketInfo();
+
+            // Generate the filename for the ticket
+            String filename = "" + (char) ('A' + rowIndex) + seatNumber;
+
+            // Save the ticket information to a file
+            ticket.saveTicket(filename);
             
         }
     }
