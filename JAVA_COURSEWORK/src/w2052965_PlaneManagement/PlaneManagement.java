@@ -4,12 +4,16 @@ import java.util.*;
 import w2052965_PlaneManagement.Ticket;*/
 
 public class PlaneManagement {
-     // Defining an array to store tickets sold during the session
-   
 
 
     public static void main(String[] args)  {
         Scanner scanner = new Scanner(System.in);
+
+        //initializing arrays in main method
+        int[][] seats = seatArray();
+        int ticketArrayIndex = 0;
+        Ticket[] ticketArray = new Ticket[52];
+
 
         //Greeting Line
         System.out.println("\n"+" ".repeat(10)+"WELCOME TO THE PLANE MANAGEMENT APPLICATION");
@@ -20,14 +24,8 @@ public class PlaneManagement {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        //initializing arrays in main method
-        int[][] seats = seatArray();
-        Ticket[] ticketArray = new Ticket[52];
-        int ticketArrayIndex = 0;
-
-
         
+        //the main programme
         while (true) {
             //Displaying the Menu options
             displayMenuOptions();
@@ -70,6 +68,13 @@ public class PlaneManagement {
                 exitApplicationPrompt(scanner);
                     break;
 
+
+                case '5':
+                System.out.println("\n");
+                print_tickets_info(ticketArray, ticketArrayIndex);
+                exitApplicationPrompt(scanner);
+                    break;                    
+
                 default:
                     break; 
             } 
@@ -93,7 +98,6 @@ public class PlaneManagement {
     }
         
     
-
     public static void exitApplicationPrompt(Scanner scanner) {
         System.out.print("\nDo you want to exit from the application (y/n) :");
         String choice = scanner.next();
@@ -125,16 +129,20 @@ public class PlaneManagement {
 
     public static void  buy_seat(int[][] seats, Ticket[] ticketArray, int ticketArrayIndex){
         Scanner scanner = new Scanner(System.in);
-        // Displaying the seat arrangement for the user
-        show_seating_plan(seats);
 
+        
+        System.out.println(" ".repeat(5)+"** Please Provide Information for Booking Purposes **");
         //collecting the personal Information
-        System.out.print("\nPlease Your Name for the Registration : ");
+        System.out.print("\nPlease Your Name for the Registration    : ");
         String userName=scanner.next();
         System.out.print("Please Your Surname for the Registration : ");
         String userSurName=scanner.next();
-        System.out.print("Please Your Email for the Registration : ");
+        System.out.print("Please Your Email for the Registration   : ");
         String userEmail=scanner.next();
+        System.out.println("Thank you for the information!\n");
+
+        // Displaying the seat arrangement for the user
+        show_seating_plan(seats);
 
         // Prompting the desired row letters and seat numbers to buy
         int rowIndex=0;
@@ -179,6 +187,7 @@ public class PlaneManagement {
                 Thread.sleep(2000); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+
             }//generating an error if seat is already occupied
             System.out.println("\nError: The seat is already booked !");
         } else {
@@ -188,6 +197,7 @@ public class PlaneManagement {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             // Booking the seat if seat is valid
             seats[rowIndex][seatNumber - 1] = 1; 
             System.out.println("\nSeat booked successfully !");
@@ -197,12 +207,12 @@ public class PlaneManagement {
             Person person = new Person(userName,userSurName,userEmail);
             char rowLetter = (char) ('A' + rowIndex);
             Ticket ticket = new Ticket(rowLetter, seatNumber, price, person);
+
             //appending  the ticket information to the ticket array
-            ticketArray[ticketArrayIndex] = ticket;
-            ticketArrayIndex++;
-            
+            ticketArray[ticketArrayIndex++] = ticket;
             //Printing the ticket information
             ticket.printTicketInfo();
+            
         }
     }
 
@@ -287,6 +297,32 @@ public class PlaneManagement {
         return null;
     }
 
-    
 
-}
+    public static void print_tickets_info(Ticket[] ticketArray, int ticketArrayIndex) {
+        System.out.println("Printing Tickets Information:");
+
+        // Initialize total sales variable
+        double totalSales = 0;
+
+        // Iterate over the ticketArray and print ticket information
+        for (int i = 0; i < ticketArray.length; i++) {
+            if (ticketArray[i] != null) {
+                Ticket ticket = ticketArray[i];
+                System.out.println("Ticket " + (i + 1) + ": Row :" +  ((char)ticket.getRow()) +
+                        " , Seat No. : " + ticket.getSeat() +
+                        " , Price £ :" + ticket.getPrice() +
+                        " , Passenger :" + ticket.getPerson().getName() +
+                        " " + ticket.getPerson().getSurname() +
+                        " , Email :" + ticket.getPerson().getEmail()+
+                        "\n");
+
+                // Add ticket price to total sales
+                totalSales += ticket.getPrice();
+            }
+        }
+
+        // Print total sales
+        System.out.println("Total Sales: £" + totalSales);
+    }
+
+} 
