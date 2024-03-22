@@ -63,13 +63,14 @@ public class Ticket {
     }
 
 
-    public void saveTicket(String filename) {
+    public void saveTicket(String filename , int rowIndex , int seatNumber) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename + ".txt"))) {
-            writer.println("Row: " + (char) (row + 'A'));  
-            writer.println("Price: " + price);
-            writer.println("Name: " + person.getName());
-            writer.println("Surname: " + person.getSurname());
-            writer.println("Email: " + person.getEmail());
+            writer.println("Row     : " + (char) ('A' + rowIndex));
+            writer.println("Seat No.: " + seatNumber);
+            writer.println("Price   :£" + price);
+            writer.println("Name    : " + person.getName());
+            writer.println("Surname : " + person.getSurname());
+            writer.println("Email   : " + person.getEmail());
         } catch (IOException e) {
             System.err.println("Error saving ticket to file: " + e.getMessage());
         }

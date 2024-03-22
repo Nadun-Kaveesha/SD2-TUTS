@@ -100,6 +100,7 @@ public class PlaneManagement {
 
 
     public static void displayMenuOptions() {
+        //printing all the menu options
         System.out.println("\n" + "\n" + " ".repeat(10) + "*".repeat(43));
         System.out.println(" ".repeat(21) + "**  Menu Options  **");
         System.out.println(" ".repeat(10) + "*".repeat(43));
@@ -149,27 +150,35 @@ public class PlaneManagement {
 
         String userName = null;
         String userSurName = null;
-
-        //collecting the personal Information(Name)      
+    
         System.out.println(" ".repeat(5)+"** Please Provide Information for Booking Purposes **\n");
+        // Collecting the personal Information (Name) and handling the errors
         while (userName == null) {
-            System.out.print("Please Enter Your Name for the Registration: ");
-            String name = scanner.next();
-            if (name.matches("^[a-zA-Z]+$")) {
-                userName = name;
-            } else {
-                System.out.println("Error: Name must only contain letters.\n");
+            try {
+                System.out.print("Please Enter Your Name for the Registration: ");
+                String name = scanner.next();
+                if (name.matches("^[a-zA-Z]+$")) {
+                    userName = name;
+                } else {
+                    throw new IllegalArgumentException("Error: Name must only contain letters.\n");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
         }
-        
-        //collecting the personal Information(Surname)
+
+        // Collecting the personal Information (Surname) and handling errors
         while (userSurName == null) {
-            System.out.print("Please Enter Your Surname for the Registration: ");
-            String surname = scanner.next();
-            if (surname.matches("^[a-zA-Z]+$")) {
-                userSurName = surname;
-            } else {
-                System.out.println("Error: Surname must only contain letters.\n");
+            try {
+                System.out.print("Please Enter Your Surname for the Registration: ");
+                String surname = scanner.next();
+                if (surname.matches("^[a-zA-Z]+$")) {
+                    userSurName = surname;
+                } else {
+                    throw new IllegalArgumentException("Error: Surname must only contain letters.\n");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
         }
 
@@ -265,8 +274,8 @@ public class PlaneManagement {
             // Generate the filename for the ticket
             String filename = "" + (char) ('A' + rowIndex) + seatNumber;
 
-            // Save the ticket information to a file
-            ticket.saveTicket(filename);
+            // Save the ticket information to a text file
+            ticket.saveTicket(filename,rowIndex,seatNumber);
             
         }
     }
@@ -279,7 +288,7 @@ public class PlaneManagement {
         int rowIndex=0;
         int seatNumber=0;
 
-        // Prompting the desired row letters and seat numbers to cancel
+        // Prompting the row letter to cancel and handling the errors
         while (true) {
             try{
                 System.out.print("Please Enter the  Row Letter You want to Cancel : ");
@@ -297,7 +306,7 @@ public class PlaneManagement {
             }
         }
 
-        // Prompting the desired seat number and handle errors
+        // Prompting the seat number and handle errors
         while (true) {
             try {
                 System.out.print("Please Enter the Seat Number You want to Cancel : ");
@@ -401,53 +410,67 @@ public class PlaneManagement {
     Scanner scanner = new Scanner(System.in);
     
     // Prompting the desired row letters and seat numbers to search
-    int rowIndex = 0;
-    int seatNumber = 0;
-    while (true) {
-        System.out.print("\nPlease Enter the Row Letter You want to Search : ");
-        char userInput = scanner.next().toUpperCase().charAt(0); 
-        if (userInput >= 'A' && userInput <= 'D') {
-            rowIndex = userInput - 'A';
-            break;
-        } else {
-            System.out.println("Enter a valid input! (A-D)");
-            continue;
-        }
-    }
-    while (true) {
-        System.out.print("Please Enter the Seat Number You want to search : ");
-        seatNumber = scanner.nextInt();
-        if (seatNumber >= 1 && seatNumber <= 14) {
-            break;
-        } else {
-            System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
-        }
-    }
+        int rowIndex=0;
+        int seatNumber=0;
 
-    // Check if the seat is booked
-    boolean isSeatBooked = seats[rowIndex][seatNumber - 1] == 1;
-    if (isSeatBooked) {
-        // Find the ticket with the given row and seat
-        Ticket foundTicket = null;
-        for (Ticket ticket : ticketArray) {
-            if (ticket != null && ticket.getRow() == rowIndex + 'A' && ticket.getSeat() == seatNumber) {
-                foundTicket = ticket;
-                break;
+        // Prompting the desired row letter and handle errors
+        while (true) {
+            try{
+                System.out.print("Please Enter the Desired Row Letter You want to Search : ");
+                String userInput = scanner.next().toUpperCase(); 
+
+                if (userInput.equals("A") || userInput.equals("B") || userInput.equals("C") || userInput.equals("D")){
+                    rowIndex = userInput.charAt(0) - 'A';
+                    break;
+                }else{
+                    System.out.println("Enter a valid input! (A-D)\n");
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid letter (A-D).\n");
+                scanner.next(); 
             }
         }
 
-        // Print ticket information
-        if (foundTicket != null) {
-            System.out.println("\nTicket Information:");
-            System.out.println("Row :" + ((char) foundTicket.getRow()));
-            System.out.println("Seat No. : " + foundTicket.getSeat());
-            System.out.println("Price £ :" + foundTicket.getPrice());
-            System.out.println("Passenger :" + foundTicket.getPerson().getName() + " " + foundTicket.getPerson().getSurname());
-            System.out.println("Email :" + foundTicket.getPerson().getEmail());
+        // Prompting the desired seat number and handle errors
+        while (true) {
+            try {
+                System.out.print("Please Enter the Desired Seat Number You want to Search : ");
+                seatNumber = scanner.nextInt();
+                if (seats[rowIndex].length >= seatNumber && seatNumber >= 1) {
+                    break;
+                } else {
+                    System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.\n");
+                scanner.next();
+            }
         }
-    } else {
-        System.out.println("This seat is available.");
+        
+        // Check if the seat is booked
+        boolean isSeatBooked = seats[rowIndex][seatNumber - 1] == 1;
+        if (isSeatBooked) {
+            // Find the ticket with the given row and seat
+            Ticket foundTicket = null;
+            for (Ticket ticket : ticketArray) {
+                if (ticket != null && ticket.getRow() == rowIndex + 'A' && ticket.getSeat() == seatNumber) {
+                    foundTicket = ticket;
+                    break;
+                }
+            }
+
+            // Print ticket information
+            if (foundTicket != null) {
+                System.out.println("\nTicket Information:");
+                System.out.println("Row       :" + ((char) foundTicket.getRow()));
+                System.out.println("Seat No.  :" + foundTicket.getSeat());
+                System.out.println("Price     :£" + foundTicket.getPrice());
+                System.out.println("Passenger :" + foundTicket.getPerson().getName() + " " + foundTicket.getPerson().getSurname());
+                System.out.println("Email     :" + foundTicket.getPerson().getEmail());
+            }
+        } else {
+            System.out.println("This seat is available.");
+        }
     }
-}
 
 } 
