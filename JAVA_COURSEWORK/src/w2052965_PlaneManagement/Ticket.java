@@ -65,8 +65,7 @@ public class Ticket {
 
     public void saveTicket(String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename + ".txt"))) {
-            writer.println("Row: " + (char) (row + 'A'));
-            writer.println("Seat: " + seat);
+            writer.println("Row: " + (char) (row + 'A'));  
             writer.println("Price: " + price);
             writer.println("Name: " + person.getName());
             writer.println("Surname: " + person.getSurname());

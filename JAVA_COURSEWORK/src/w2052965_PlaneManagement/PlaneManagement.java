@@ -1,5 +1,6 @@
 package w2052965_PlaneManagement;
 import java.util.*;
+
 /*import w2052965_PlaneManagement.Person;
 import w2052965_PlaneManagement.Ticket;*/
 
@@ -8,85 +9,94 @@ public class PlaneManagement {
     private static int ticketArrayIndex = 0;
 
 
-    public static void main(String[] args)  {
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
 
-        //initializing arrays in main method
-        int[][] seats = seatArray();
+    // initializing arrays in the main method
+    int[][] seats = seatArray();
 
+    // Greeting Line
+    System.out.println("\n" + " ".repeat(10) + "WELCOME TO THE PLANE MANAGEMENT APPLICATION");
 
-        //Greeting Line
-        System.out.println("\n"+" ".repeat(10)+"WELCOME TO THE PLANE MANAGEMENT APPLICATION");
-
-        //Adding a delay
-        try {
-            Thread.sleep(1000); 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        //the main programme
-        while (true) {
-            //Displaying the Menu options
-            displayMenuOptions();
-
-            //Prompting for for an option to choose
-            System.out.print("\n"+"Please Select an Option :");
-            char opt=scanner.next().charAt(0);
-
-
-            switch (opt) {
-                case '1':
-                System.out.println("\n");
-                buy_seat(seats);//running the buy seat method
-                exitApplicationPrompt(scanner);
-                    break;
-                
-                case '2':
-                System.out.println("\n");
-                cancel_seat(seats,ticketArray,ticketArrayIndex);//running the buy seat method
-                exitApplicationPrompt(scanner);
-                    break;
-
-                case '4':
-                System.out.println("\n");
-                show_seating_plan(seats);//running the buy seat method
-                exitApplicationPrompt(scanner);
-                    break;
-
-
-                case '3':
-                System.out.println("\n");
-                int[] index = find_first_available(seats);
-
-                if (index != null) {
-                    char rowChar = (char) ('A' + index[0]);
-                    System.out.println("First available seat found at :"  + rowChar +  (index[1] + 1) );
-                } else {
-                    System.out.println("No available seat found in the plane.");
-                }
-                exitApplicationPrompt(scanner);
-                    break;
-
-
-                case '5':
-                System.out.println("\n");
-                print_tickets_info();
-                exitApplicationPrompt(scanner);
-                    break;      
-                    
-                
-                case '6':
-                System.out.println("\n");
-                search_ticket(seats);
-                exitApplicationPrompt(scanner);
-                    break;     
-
-                default:
-                    break; 
-            } 
-        }       
+    // Adding a delay
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
     }
+
+    // the main program
+    while (true) {
+        // Displaying the Menu options
+        displayMenuOptions();
+
+        // Prompting for an option to choose
+        int opt;
+        while (true) {
+            System.out.print("\nPlease Select an Option:");
+            if (scanner.hasNextInt()) {
+                opt = scanner.nextInt();
+                if (opt >= 1 && opt <= 6) {
+                    // Running the switching options
+                    switch (opt) {
+                        case 1:
+                            System.out.println("\n");
+                            buy_seat(seats); // running the buy seat method
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        case 2:
+                            System.out.println("\n");
+                            cancel_seat(seats, ticketArray, ticketArrayIndex); // running the cancel seat method
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        case 3:
+                            System.out.println("\n");
+                            int[] index = find_first_available(seats);// running the seat finder method
+
+                            if (index != null) {
+                                char rowChar = (char) ('A' + index[0]);
+                                System.out.println("First available seat found at :" + rowChar + (index[1] + 1));
+                            } else {
+                                System.out.println("No available seat found in the plane.");
+                            }
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        case 4:
+                            System.out.println("\n");
+                            show_seating_plan(seats); // running the show seating plan method
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        case 5:
+                            System.out.println("\n");
+                            print_tickets_info();// running the ticket printing method
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        case 6:
+                            System.out.println("\n");
+                            search_ticket(seats);// running the search ticket method
+                            exitApplicationPrompt(scanner);
+                            break;
+
+                        default:
+                            System.out.println("Invalid option. Please select a valid option from the menu.");
+                            break;
+                    }
+                    break; // Exit the while loop if a valid option is selected
+                } else {
+                    System.out.println("Enter a Valid Selection From the Menu (1-6)!");
+                }
+            } else {
+                String input = scanner.next();
+                System.out.println("Invalid input. Please enter a number.");
+            }
+        }
+    }
+}
 
 
     public static void displayMenuOptions() {
@@ -137,13 +147,33 @@ public class PlaneManagement {
     public static void  buy_seat(int[][] seats){
         Scanner scanner = new Scanner(System.in);
 
+        String userName = null;
+        String userSurName = null;
+
+        //collecting the personal Information(Name)      
+        System.out.println(" ".repeat(5)+"** Please Provide Information for Booking Purposes **\n");
+        while (userName == null) {
+            System.out.print("Please Enter Your Name for the Registration: ");
+            String name = scanner.next();
+            if (name.matches("^[a-zA-Z]+$")) {
+                userName = name;
+            } else {
+                System.out.println("Error: Name must only contain letters.\n");
+            }
+        }
         
-        System.out.println(" ".repeat(5)+"** Please Provide Information for Booking Purposes **");
-        //collecting the personal Information
-        System.out.print("\nPlease Your Name for the Registration    : ");
-        String userName=scanner.next();
-        System.out.print("Please Your Surname for the Registration : ");
-        String userSurName=scanner.next();
+        //collecting the personal Information(Surname)
+        while (userSurName == null) {
+            System.out.print("Please Enter Your Surname for the Registration: ");
+            String surname = scanner.next();
+            if (surname.matches("^[a-zA-Z]+$")) {
+                userSurName = surname;
+            } else {
+                System.out.println("Error: Surname must only contain letters.\n");
+            }
+        }
+
+        //collecting the personal Information(email)
         System.out.print("Please Your Email for the Registration   : ");
         String userEmail=scanner.next();
         System.out.println("Thank you for the information!\n");
@@ -151,29 +181,41 @@ public class PlaneManagement {
         // Displaying the seat arrangement for the user
         show_seating_plan(seats);
 
-        // Prompting the desired row letters and seat numbers to buy
         int rowIndex=0;
         int seatNumber=0;
+
+        // Prompting the desired row letters and handle errors
         while (true) {
-            System.out.print("\nPlease Enter the Desired Row Letter You want to Buy : ");
-            char userInput = scanner.next().toUpperCase().charAt(0); 
-            if (userInput == 'A' || userInput == 'B' || userInput == 'C' || userInput == 'D'){
-                rowIndex = userInput - 'A';
+            try{
+                System.out.print("\nPlease Enter the Desired Row Letter You want to Buy : ");
+                String userInput = scanner.next().toUpperCase(); 
+
+                if (userInput.equals("A") || userInput.equals("B") || userInput.equals("C") || userInput.equals("D")){
+                    rowIndex = userInput.charAt(0) - 'A';
                     break;
-            }else{
-                System.out.println("Enter a valid input! (A-D)");
-                continue;
+                }else{
+                    System.out.println("Enter a valid input! (A-D)\n");
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid letter (A-D).\n");
+                scanner.next(); 
             }
         }
+
+        // Prompting the desired seat number and handle errors
         while (true) {
-            System.out.print("Please Enter the Desired Seat Number You want to Buy : ");
-            seatNumber = scanner.nextInt();
-            if (1<=seatNumber && 14>=seatNumber
-            ) {
-                break;
-            }else{
-                System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
-            }  
+            try {
+                System.out.print("Please Enter the Desired Seat Number You want to Buy : ");
+                seatNumber = scanner.nextInt();
+                if (seats[rowIndex].length >= seatNumber && seatNumber >= 1) {
+                    break;
+                } else {
+                    System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.\n");
+                scanner.next();
+            }
         }
 
         //Calculating the price
@@ -233,28 +275,42 @@ public class PlaneManagement {
     public static void cancel_seat(int[][] seats, Ticket[] ticketArray, int ticketArrayIndex) {
         Scanner scanner = new Scanner(System.in);
         
-        // Prompting the desired row letters and seat numbers to buy
+        
         int rowIndex=0;
         int seatNumber=0;
+
+        // Prompting the desired row letters and seat numbers to cancel
         while (true) {
-            System.out.print("\nPlease Enter the Row Letter You want to Cancel : ");
-            char userInput = scanner.next().toUpperCase().charAt(0); 
-            if (userInput == 'A' || userInput == 'B' || userInput == 'C' || userInput == 'D'){
-                rowIndex = userInput - 'A';
+            try{
+                System.out.print("Please Enter the  Row Letter You want to Cancel : ");
+                String userInput = scanner.next().toUpperCase(); 
+
+                if (userInput.equals("A") || userInput.equals("B") || userInput.equals("C") || userInput.equals("D")){
+                    rowIndex = userInput.charAt(0) - 'A';
                     break;
-            }else{
-                System.out.println("Enter a valid input! (A-D)");
-                continue;
+                }else{
+                    System.out.println("Enter a valid input! (A-D)\n");
+                }
+            }catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid letter (A-D).\n");
+                scanner.next(); 
             }
         }
+
+        // Prompting the desired seat number and handle errors
         while (true) {
-            System.out.print("Please Enter the Seat Number You want to cancel : ");
-            seatNumber = scanner.nextInt();
-            if (1<=seatNumber && 14>=seatNumber) {
-                break;
-            }else{
-                System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
-            }  
+            try {
+                System.out.print("Please Enter the Seat Number You want to Cancel : ");
+                seatNumber = scanner.nextInt();
+                if (seats[rowIndex].length >= seatNumber && seatNumber >= 1) {
+                    break;
+                } else {
+                    System.out.println("Enter a corresponding seat number (A,D)=14 seats / (B,C)=12 seats\n");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.\n");
+                scanner.next(); 
+            }
         }
             
         
@@ -265,7 +321,7 @@ public class PlaneManagement {
 
             // Mark the seat as cancelled
             seats[rowIndex][seatNumber - 1] = 0; // cancel the seat
-            System.out.println("Seat cancelled successfully.");
+            System.out.println("Seat cancelled successfully !!");
 
             //Removing the seat details form the ticket array
             for (int i = 0; i < ticketArrayIndex; i++) {
